@@ -21,6 +21,11 @@ exporters:
     path: /logs/logs.json
   file/metrics:
     path: /logs/metrics.json
+  otlp/uptrace:
+    endpoint: http://uptrace:14317
+    tls: { insecure: true }
+    headers:
+      uptrace-dsn: 'http://project2_secret_token@localhost:14318?grpc=14317'
 
 processors:
   batch:
@@ -31,17 +36,29 @@ extensions:
   zpages:
 
 service:
-  extensions: [health_check, pprof, zpages]
+  extensions:
+    - health_check
+    - pprof
+    - zpages
   pipelines:
     traces:
-      receivers: [otlp]
-      processors: [batch]
-      exporters: [debug, file/traces]
+      receivers: [ otlp ]
+      processors: [ batch ]
+      exporters:
+        - debug
+        - file/traces
+        - otlp/uptrace
     metrics:
-      receivers: [otlp]
-      processors: [batch]
-      exporters: [debug, file/metrics]
+      receivers: [ otlp ]
+      processors: [ batch ]
+      exporters:
+        - debug
+        - file/metrics
+        - otlp/uptrace
     logs:
-      receivers: [otlp]
-      processors: [batch]
-      exporters: [debug, file/logs]
+      receivers: [ otlp ]
+      processors: [ batch ]
+      exporters:
+        - debug
+        - file/logs
+        - otlp/uptrace

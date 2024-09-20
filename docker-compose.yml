@@ -1,5 +1,22 @@
 services:
 
+  # https://github.com/uptrace/uptrace/blob/master/example/docker/docker-compose.yml
+  clickhouse:
+    image: clickhouse/clickhouse-server:24.8
+    restart: on-failure
+    environment:
+      CLICKHOUSE_DB: uptrace
+    healthcheck:
+      test: ['CMD', 'wget', '--spider', '-q', 'localhost:8123/ping']
+      interval: 1s
+      timeout: 1s
+      retries: 30
+    volumes:
+      - clickhouse-data:/var/lib/clickhouse
+    ports:
+      - '8123:8123'
+      - '9000:9000'
+
   mysql:
     image: mysql:8.4
     ports:
@@ -14,8 +31,8 @@ services:
       - ./docker/mysql/conf.d:/etc/mysql/conf.d:ro
       - ./docker/mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
       - mysql-data:/var/lib/mysql
-    profiles:
-      - mysql
+#    profiles:
+#      - mysql
 
   postgres:
     image: postgres:16.3
@@ -26,8 +43,8 @@ services:
 #      - POSTGRES_PASSWORD=petclinic
 #      - POSTGRES_USER=petclinic
 #      - POSTGRES_DB=petclinic
-    profiles:
-      - postgres
+#    profiles:
+#      - postgres
     volumes:
       - ./docker/postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
       - postgres-data:/var/lib/postgresql/data
@@ -41,6 +58,25 @@ services:
       - "4317:4317"   # OTLP gRPC receiver
       - "4318:4318"   # OTLP HTTP receiver
 
+  # TODO mailpit for testing email alerts
+
+  # https://github.com/uptrace/uptrace/blob/master/example/docker/docker-compose.yml
+  uptrace:
+    image: 'uptrace/uptrace:1.7.7'
+    #image: 'uptrace/uptrace-dev:latest'
+    #restart: on-failure
+    volumes:
+      - ./docker/uptrace/uptrace.yml:/etc/uptrace/uptrace.yml
+    #environment:
+    #  - DEBUG=2
+    ports:
+      - '14317:14317'
+      - '14318:14318'
+    depends_on:
+      - clickhouse
+      - postgres
+
 volumes:
+  clickhouse-data:
   mysql-data:
   postgres-data:
