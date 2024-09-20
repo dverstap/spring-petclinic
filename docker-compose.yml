@@ -32,6 +32,15 @@ services:
       - ./docker/postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
       - postgres-data:/var/lib/postgresql/data
 
+  otelcol:
+    image: otel/opentelemetry-collector:0.109.0
+    volumes:
+      - ./docker/otelcol/config.yaml:/etc/otelcol/config.yaml
+      - ./local/logs/:/logs/ # At least on Linux, you may need: chmod a+wx ./local/logs/
+    ports:
+      - "4317:4317"   # OTLP gRPC receiver
+      - "4318:4318"   # OTLP HTTP receiver
+
 volumes:
   mysql-data:
   postgres-data:

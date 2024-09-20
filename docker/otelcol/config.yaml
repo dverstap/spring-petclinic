@@ -1,0 +1,47 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+  otlp/2:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:55690
+
+exporters:
+  debug:
+    verbosity: detailed
+  #  file:
+  #    path: /logs/logs.json
+  file/traces:
+    path: /logs/traces.json
+  file/logs:
+    path: /logs/logs.json
+  file/metrics:
+    path: /logs/metrics.json
+
+processors:
+  batch:
+
+extensions:
+  health_check:
+  pprof:
+  zpages:
+
+service:
+  extensions: [health_check, pprof, zpages]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [debug, file/traces]
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [debug, file/metrics]
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [debug, file/logs]

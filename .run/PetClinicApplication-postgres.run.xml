@@ -1,9 +1,17 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="PetClinicApplication-postgres" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <option name="ACTIVE_PROFILES" value="postgres" />
+    <envs>
+      <env name="OTEL_EXPORTER_OTLP_ENDPOINT" value="http://127.0.0.1:4318" />
+      <env name="OTEL_LOGS_EXPORTER" value="otlp" />
+      <env name="OTEL_METRICS_EXPORTER" value="otlp" />
+      <env name="OTEL_RESOURCE_ATTRIBUTES" value="service.name=petclinic,service.version=0.1,deployment.environment=dev" />
+      <env name="OTEL_TRACES_EXPORTER" value="otlp" />
+    </envs>
     <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
     <module name="spring-petclinic" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="org.springframework.samples.petclinic.PetClinicApplication" />
+    <option name="VM_PARAMETERS" value="-javaagent:opentelemetry-javaagent.jar" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>
