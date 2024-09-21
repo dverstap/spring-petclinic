@@ -20,8 +20,8 @@
 ##
 ch:
   addr: clickhouse:9000
-  user: default
-  password:
+  user: uptrace
+  password: uptrace
   database: uptrace
 
   # TLS configuration. Uncomment to enable.

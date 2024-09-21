@@ -4,14 +4,26 @@ services:
   clickhouse:
     image: clickhouse/clickhouse-server:24.8
     restart: on-failure
+    cap_add:
+      - SYS_NICE
+      - NET_ADMIN
+      - IPC_LOCK
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    mem_limit: 1g
     environment:
-      CLICKHOUSE_DB: uptrace
+      CLICKHOUSE_USER: clickhouse
+      CLICKHOUSE_PASSWORD: clickhouse
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
     healthcheck:
-      test: ['CMD', 'wget', '--spider', '-q', 'localhost:8123/ping']
+      test: [ 'CMD', 'wget', '--spider', '-q', 'localhost:8123/ping' ]
       interval: 1s
       timeout: 1s
       retries: 30
     volumes:
+      - ./docker/clickhouse/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
       - clickhouse-data:/var/lib/clickhouse
     ports:
       - '8123:8123'
@@ -24,15 +36,15 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=
       - MYSQL_ALLOW_EMPTY_PASSWORD=true
-#      - MYSQL_USER=petclinic
-#      - MYSQL_PASSWORD=petclinic
-#      - MYSQL_DATABASE=petclinic
+    # - MYSQL_USER=petclinic
+    # - MYSQL_PASSWORD=petclinic
+    # - MYSQL_DATABASE=petclinic
     volumes:
       - ./docker/mysql/conf.d:/etc/mysql/conf.d:ro
       - ./docker/mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
       - mysql-data:/var/lib/mysql
-#    profiles:
-#      - mysql
+  # profiles:
+  #   - mysql
 
   postgres:
     image: postgres:16.3
@@ -40,11 +52,11 @@ services:
       - "5432:5432"
     environment:
       - POSTGRES_PASSWORD=postgres
-#      - POSTGRES_PASSWORD=petclinic
-#      - POSTGRES_USER=petclinic
-#      - POSTGRES_DB=petclinic
-#    profiles:
-#      - postgres
+    # - POSTGRES_PASSWORD=petclinic
+    # - POSTGRES_USER=petclinic
+    # - POSTGRES_DB=petclinic
+    #profiles:
+    # - postgres
     volumes:
       - ./docker/postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
       - postgres-data:/var/lib/postgresql/data
