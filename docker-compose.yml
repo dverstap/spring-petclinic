@@ -76,7 +76,25 @@ services:
       - clickhouse
       - postgres
 
+  openobserve:
+    #image: openobserve/openobserve:v0.12.1-simd
+    image: openobserve/openobserve:v0.12.1
+    #restart: unless-stopped
+    environment:
+      ZO_TELEMETRY: "false"
+      ZO_META_STORE: "postgres"
+      ZO_META_POSTGRES_DSN: "postgres://openobserve:openobserve@postgres:5432/openobserve"
+      #ZO_META_STORE: "mysql"
+      #ZO_META_MYSQL_DSN: "mysql://openobserve:openobserve@mysql:3306/openobserve"
+      ZO_ROOT_USER_EMAIL: "root@example.com"
+      ZO_ROOT_USER_PASSWORD: "Complexpass#123"
+    ports:
+      - "5080:5080"
+    volumes:
+      - openobserve-data:/data
+
 volumes:
   clickhouse-data:
   mysql-data:
   postgres-data:
+  openobserve-data:

@@ -21,6 +21,15 @@ exporters:
     path: /logs/logs.json
   file/metrics:
     path: /logs/metrics.json
+  otlp/openobserve:
+    #endpoint: http://openobserve:5080/api/default # http
+    endpoint: openobserve:5081 # grpc
+    tls: { insecure: true }
+    headers:
+      organization: default
+      stream-name: default
+      #Authorization: Basic%20cm9vdEBleGFtcGxlLmNvbTpDb21wbGV4cGFzcyMxMjM=
+      Authorization: Basic cm9vdEBleGFtcGxlLmNvbTp1RWJyaXQ1eThhOXpKVkNn
   otlp/uptrace:
     endpoint: http://uptrace:14317
     tls: { insecure: true }
@@ -47,6 +56,7 @@ service:
       exporters:
         - debug
         - file/traces
+        - otlp/openobserve
         - otlp/uptrace
     metrics:
       receivers: [ otlp ]
@@ -54,6 +64,7 @@ service:
       exporters:
         - debug
         - file/metrics
+        - otlp/openobserve
         - otlp/uptrace
     logs:
       receivers: [ otlp ]
@@ -61,4 +72,5 @@ service:
       exporters:
         - debug
         - file/logs
+        - otlp/openobserve
         - otlp/uptrace

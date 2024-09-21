@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SqlDialectMappings">
+    <file url="file://$PROJECT_DIR$/docker/mysql/docker-entrypoint-initdb.d/10-petclinic.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/docker/mysql/docker-entrypoint-initdb.d/30-openobserve.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/docker/postgres/docker-entrypoint-initdb.d/10-petclinic.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/docker/postgres/docker-entrypoint-initdb.d/20-uptrace.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/docker/postgres/docker-entrypoint-initdb.d/30-openobserve.sql" dialect="PostgreSQL" />
+  </component>
+</project>
